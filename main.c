@@ -1,3 +1,4 @@
+#include "player.h"
 #include "raylib.h"
 #include "utils.h"
 #include <raymath.h>
@@ -19,7 +20,30 @@ int main() {
 
   Texture2D ring_img = LoadTexture("assets/ring.png");
 
+  /* clang-format off */
+  Player players[1] = {
+    {
+      .rect = (Rectangle){playing_area.x, playing_area.y, 50, 50},
+      .accel = 120.0f,
+      .friction = 120.0f,
+      .vel = Vector2Zero(),
+      .keybinds = {
+	[PLAYER_KEYBIND_MOVE_DOWN] = KEY_S,
+	[PLAYER_KEYBIND_MOVE_UP] = KEY_W,
+	[PLAYER_KEYBIND_MOVE_LEFT] = KEY_A,
+	[PLAYER_KEYBIND_MOVE_RIGHT] = KEY_D
+      },
+      .clr = BLUE
+    }
+  };
+  /* clang-format on */
+
   while (!WindowShouldClose()) {
+    float dt = GetFrameTime();
+
+    PlayerMove(&players[0]);
+    PlayerUpdate(&players[0], dt, playing_area);
+
     ClearBackground(WHITE);
 
     BeginTextureMode(target);
@@ -27,6 +51,8 @@ int main() {
 
     DrawTexturePro(ring_img, (Rectangle){0, 0, 100, 100}, playing_area_display,
                    Vector2Zero(), 0.0f, WHITE);
+
+    PlayerDraw(players[0]);
 
     EndTextureMode();
 
